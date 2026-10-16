@@ -45,7 +45,7 @@ const DEFAULT_CONFIG = {
   language: 'ar',
   theme: 'dark',
   autoUpdateCheck: true,
-  repoUrl: 'https://github.com/HosAzz/live-stats-monitor'
+  repoUrl: 'https://github.com/hosamazzam/live-stats-monitor'
 };
 
 function loadConfig() {
@@ -746,7 +746,7 @@ app.api('/api/update/check', async () => {
 
   // Also query GitHub release API as a fallback or if not git
   try {
-    const ghRes = await fetch('https://raw.githubusercontent.com/HosAzz/live-stats-monitor/main/plugin.json', { signal: AbortSignal.timeout(3000) });
+    const ghRes = await fetch('https://raw.githubusercontent.com/hosamazzam/live-stats-monitor/main/plugin.json', { signal: AbortSignal.timeout(3000) });
     if (ghRes.ok) {
       const remotePlugin = await ghRes.json();
       if (remotePlugin.version && remotePlugin.version !== currentVersion) {
@@ -804,7 +804,7 @@ app.api('/api/update/apply', async () => {
       'plugin.json'
     ];
     for (const f of filesToUpdate) {
-      const res = await fetch(`https://raw.githubusercontent.com/HosAzz/live-stats-monitor/main/${f}`, { signal: AbortSignal.timeout(6000) });
+      const res = await fetch(`https://raw.githubusercontent.com/hosamazzam/live-stats-monitor/main/${f}`, { signal: AbortSignal.timeout(6000) });
       if (res.ok) {
         const content = await res.text();
         writeFileSync(join(PLUGIN_ROOT, f), content, 'utf8');

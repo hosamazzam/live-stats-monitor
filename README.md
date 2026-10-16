@@ -1,9 +1,9 @@
 # Live Stats & Context Monitor ⚡
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/HosAzz/live-stats-monitor)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/hosamazzam/live-stats-monitor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Antigravity](https://img.shields.io/badge/Google%20Antigravity-Plugin-purple.svg)](https://github.com/HosAzz/live-stats-monitor)
-[![Models](https://img.shields.io/badge/Supported-Argon%204%20%7C%20Flash%203.8%20%7C%20Pro-emerald.svg)](https://github.com/HosAzz/live-stats-monitor)
+[![Antigravity](https://img.shields.io/badge/Google%20Antigravity-Plugin-purple.svg)](https://github.com/hosamazzam/live-stats-monitor)
+[![Models](https://img.shields.io/badge/Supported-Argon%204%20%7C%20Flash%203.8%20%7C%20Pro-emerald.svg)](https://github.com/hosamazzam/live-stats-monitor)
 
 > **لوحة تحكم تفاعلية ذكية (Sidecar) لبرنامج Google Antigravity لمتابعة استهلاك التوكنز لحظياً، فصل استهلاك النماذج المختلفة (Gemini 4 Argon / Gemini 3.8 Flash / Claude)، ومراقبة مساحة السياق وفريق الوكلاء الفرعيين (Subagents).**
 > 
@@ -39,7 +39,7 @@
 افتح سطر الأوامر (PowerShell أو Terminal) ونفّذ الأمر التالي:
 
 ```bash
-git clone https://github.com/HosAzz/live-stats-monitor.git "$HOME\.gemini\config\plugins\live-stats-monitor"
+git clone https://github.com/hosamazzam/live-stats-monitor.git "$HOME\.gemini\config\plugins\live-stats-monitor"
 ```
 
 ### الطريقة الثانية: التحميل اليدوي (ZIP Download)
@@ -141,4 +141,4 @@ live-stats-monitor/
 
 ---
 
-**Developed with ❤️ by [HosAzz](https://github.com/HosAzz) for the Google Antigravity Community.**
+**Developed with ❤️ by [hosamazzam](https://github.com/hosamazzam) for the Google Antigravity Community.**
