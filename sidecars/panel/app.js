@@ -41,7 +41,17 @@ const I18N = {
     checkingUpdate: 'جاري فحص التحديثات...',
     updating: 'جاري التحديث...',
     updateSuccess: 'تم التحديث بنجاح!',
-    updateFailed: 'فشل التحديث'
+    updateFailed: 'فشل التحديث',
+    settingsTitle: 'الإعدادات والتحديثات',
+    settingsLangLabel: 'لغة الواجهة (Interface Language):',
+    updateCenter: 'مركز التحديثات المباشرة',
+    installedVersion: (v) => `الإصدار المثبت: v${v}`,
+    updateCenterDesc: 'فحص وتثبيت التحديثات الجديدة مباشرة من مستودع GitHub بنقرة زر دون الحاجة لفتح سطر الأوامر.',
+    checkUpdateNow: 'فحص وتثبيت التحديثات الآن',
+    installUpdateNow: 'تثبيت التحديث الجديد الآن 🚀',
+    repoKey: 'مستودع المشروع:',
+    autoUpdateStatus: 'الفحص التلقائي:',
+    enabledStatus: 'مفعّل (Auto-check Enabled)'
   },
   en: {
     dir: 'ltr',
@@ -83,7 +93,17 @@ const I18N = {
     checkingUpdate: 'Checking updates...',
     updating: 'Updating...',
     updateSuccess: 'Updated successfully!',
-    updateFailed: 'Update failed'
+    updateFailed: 'Update failed',
+    settingsTitle: 'Settings & Updates',
+    settingsLangLabel: 'Interface Language:',
+    updateCenter: 'Live Update Center',
+    installedVersion: (v) => `Installed Version: v${v}`,
+    updateCenterDesc: 'Check and install updates directly from GitHub with 1-click without using command line.',
+    checkUpdateNow: 'Check & Install Updates Now',
+    installUpdateNow: 'Install New Update Now 🚀',
+    repoKey: 'Repository:',
+    autoUpdateStatus: 'Auto Check:',
+    enabledStatus: 'Enabled'
   }
 };
 
@@ -113,6 +133,19 @@ function applyLanguage(lang) {
   // Update switcher button label
   const langBtnText = document.getElementById('lang-btn-text');
   if (langBtnText) langBtnText.textContent = I18N[currentLang].switchBtnLabel;
+
+  // Update modal language options
+  const optAr = document.getElementById('lang-opt-ar');
+  const optEn = document.getElementById('lang-opt-en');
+  if (optAr && optEn) {
+    if (currentLang === 'ar') {
+      optAr.classList.add('active');
+      optEn.classList.remove('active');
+    } else {
+      optEn.classList.add('active');
+      optAr.classList.remove('active');
+    }
+  }
 
   // Re-render dynamic stats if available
   if (lastFetchedData) {
@@ -290,9 +323,18 @@ async function checkUpdate(silent = false) {
   const icon = document.getElementById('update-icon');
   const badgeText = document.getElementById('update-badge-text');
 
+  // Modal elements
+  const modalStatus = document.getElementById('modal-update-status');
+  const modalVersion = document.getElementById('modal-version-tag');
+  const modalUpdateBtn = document.getElementById('modal-update-btn');
+  const modalUpdateBtnText = document.getElementById('modal-update-btn-text');
+  const modalUpdateIcon = document.getElementById('modal-update-icon');
+
   if (!silent) {
-    icon.classList.add('spinning');
-    badgeText.textContent = t('checkingUpdate');
+    if (icon) icon.classList.add('spinning');
+    if (badgeText) badgeText.textContent = t('checkingUpdate');
+    if (modalUpdateIcon) modalUpdateIcon.classList.add('spinning');
+    if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('checkingUpdate');
   }
 
   try {
@@ -300,23 +342,43 @@ async function checkUpdate(silent = false) {
     if (!res.ok) throw new Error('Check failed');
     const info = await res.json();
 
-    icon.classList.remove('spinning');
+    if (icon) icon.classList.remove('spinning');
+    if (modalUpdateIcon) modalUpdateIcon.classList.remove('spinning');
+
+    const curVer = info.currentVersion || '1.1.0';
+    if (modalVersion) modalVersion.textContent = t('installedVersion', curVer);
 
     if (info.hasUpdate) {
       updateAvailableState = true;
-      btn.className = 'update-btn update-available';
-      badgeText.textContent = t('updateAvailable');
-      btn.title = info.updateMessage || 'Click to install new update';
+      if (btn) {
+        btn.className = 'update-btn update-available';
+        badgeText.textContent = t('updateAvailable');
+        btn.title = info.updateMessage || 'Click to install new update';
+      }
+      if (modalStatus) {
+        modalStatus.textContent = t('updateAvailable');
+        modalStatus.className = 'status-badge has-update';
+      }
+      if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('installUpdateNow');
     } else {
       updateAvailableState = false;
-      btn.className = 'update-btn';
-      badgeText.textContent = `v${info.currentVersion || '1.1.0'}`;
-      btn.title = t('upToDate');
+      if (btn) {
+        btn.className = 'update-btn';
+        badgeText.textContent = `v${curVer}`;
+        btn.title = t('upToDate');
+      }
+      if (modalStatus) {
+        modalStatus.textContent = t('upToDate');
+        modalStatus.className = 'status-badge';
+      }
+      if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('checkUpdateNow');
     }
   } catch (e) {
-    icon.classList.remove('spinning');
+    if (icon) icon.classList.remove('spinning');
+    if (modalUpdateIcon) modalUpdateIcon.classList.remove('spinning');
     if (!silent) {
-      badgeText.textContent = 'v1.1.0';
+      if (badgeText) badgeText.textContent = 'v1.1.0';
+      if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('checkUpdateNow');
     }
   }
 }
@@ -326,29 +388,57 @@ async function applyUpdate() {
   const icon = document.getElementById('update-icon');
   const badgeText = document.getElementById('update-badge-text');
 
-  icon.classList.add('spinning');
-  badgeText.textContent = t('updating');
+  const modalUpdateBtn = document.getElementById('modal-update-btn');
+  const modalUpdateBtnText = document.getElementById('modal-update-btn-text');
+  const modalUpdateIcon = document.getElementById('modal-update-icon');
+
+  if (icon) icon.classList.add('spinning');
+  if (badgeText) badgeText.textContent = t('updating');
+  if (modalUpdateIcon) modalUpdateIcon.classList.add('spinning');
+  if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('updating');
 
   try {
     const res = await fetch('/api/update/apply');
     const result = await res.json();
-    icon.classList.remove('spinning');
+
+    if (icon) icon.classList.remove('spinning');
+    if (modalUpdateIcon) modalUpdateIcon.classList.remove('spinning');
 
     if (result.success) {
-      btn.className = 'update-btn update-success';
-      badgeText.textContent = t('updateSuccess');
+      if (btn) {
+        btn.className = 'update-btn update-success';
+        badgeText.textContent = t('updateSuccess');
+      }
+      if (modalUpdateBtn) {
+        modalUpdateBtn.className = 'btn-primary-update update-success';
+      }
+      if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('updateSuccess');
+
       setTimeout(() => {
         checkUpdate(true);
       }, 3000);
     } else {
-      btn.className = 'update-btn update-failed';
-      badgeText.textContent = t('updateFailed');
+      if (btn) {
+        btn.className = 'update-btn update-failed';
+        badgeText.textContent = t('updateFailed');
+      }
+      if (modalUpdateBtn) {
+        modalUpdateBtn.className = 'btn-primary-update update-failed';
+      }
+      if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('updateFailed');
       alert('Update message: ' + (result.error || result.message));
     }
   } catch (e) {
-    icon.classList.remove('spinning');
-    btn.className = 'update-btn update-failed';
-    badgeText.textContent = t('updateFailed');
+    if (icon) icon.classList.remove('spinning');
+    if (modalUpdateIcon) modalUpdateIcon.classList.remove('spinning');
+    if (btn) {
+      btn.className = 'update-btn update-failed';
+      badgeText.textContent = t('updateFailed');
+    }
+    if (modalUpdateBtn) {
+      modalUpdateBtn.className = 'btn-primary-update update-failed';
+    }
+    if (modalUpdateBtnText) modalUpdateBtnText.textContent = t('updateFailed');
   }
 }
 
@@ -357,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial Language setup
   applyLanguage(currentLang);
 
-  // Language switcher click
+  // Quick Language switcher in header
   const langBtn = document.getElementById('lang-btn');
   if (langBtn) {
     langBtn.addEventListener('click', () => {
@@ -367,7 +457,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Updater button click
+  // Settings Modal Controls
+  const settingsBtn = document.getElementById('settings-btn');
+  const settingsModal = document.getElementById('settings-modal');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+
+  if (settingsBtn && settingsModal) {
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.style.display = 'flex';
+      checkUpdate(true);
+    });
+  }
+
+  if (modalCloseBtn && settingsModal) {
+    modalCloseBtn.addEventListener('click', () => {
+      settingsModal.style.display = 'none';
+    });
+  }
+
+  if (settingsModal) {
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.style.display = 'none';
+      }
+    });
+  }
+
+  // Modal Language Switcher Options
+  const optAr = document.getElementById('lang-opt-ar');
+  const optEn = document.getElementById('lang-opt-en');
+  if (optAr) {
+    optAr.addEventListener('click', () => {
+      applyLanguage('ar');
+      fetch('/api/config/save?language=ar').catch(() => {});
+    });
+  }
+  if (optEn) {
+    optEn.addEventListener('click', () => {
+      applyLanguage('en');
+      fetch('/api/config/save?language=en').catch(() => {});
+    });
+  }
+
+  // Modal Update Button Click
+  const modalUpdateBtn = document.getElementById('modal-update-btn');
+  if (modalUpdateBtn) {
+    modalUpdateBtn.addEventListener('click', () => {
+      if (updateAvailableState) {
+        applyUpdate();
+      } else {
+        checkUpdate(false);
+      }
+    });
+  }
+
+  // Footer Updater button click
   const updateBtn = document.getElementById('update-btn');
   if (updateBtn) {
     updateBtn.addEventListener('click', () => {
@@ -387,3 +531,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 updateStats();
 setInterval(updateStats, 2000);
+

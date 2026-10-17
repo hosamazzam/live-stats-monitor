@@ -23,6 +23,10 @@
         <span class="lang-icon">🌐</span>
         <span id="lang-btn-text">English</span>
       </button>
+      <!-- Settings & Update Modal Button -->
+      <button id="settings-btn" class="settings-btn" title="الإعدادات والتحديثات / Settings & Updates">
+        <span>⚙️</span>
+      </button>
       <div id="status-pill" class="status-pill idle">
         <span class="status-dot"></span>
         <span id="status-text">جاهز (Idle)</span>
@@ -146,10 +150,64 @@
     </section>
   </main>
 
+  <!-- Settings & Update Modal -->
+  <div id="settings-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span>
+          <span data-i18n="settingsTitle">الإعدادات والتحديثات</span>
+        </div>
+        <button id="modal-close-btn" class="modal-close-btn" title="إغلاق">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Language Group -->
+        <div class="settings-group">
+          <label class="settings-label" data-i18n="settingsLangLabel">لغة الواجهة (Interface Language):</label>
+          <div class="lang-switch-group">
+            <button id="lang-opt-ar" class="lang-opt-btn active">العربية (AR)</button>
+            <button id="lang-opt-en" class="lang-opt-btn">English (EN)</button>
+          </div>
+        </div>
+
+        <!-- Update Center Group -->
+        <div class="settings-group update-center-box">
+          <div class="update-header">
+            <div>
+              <span class="settings-label" data-i18n="updateCenter">مركز التحديثات المباشرة</span>
+              <div class="version-tag" id="modal-version-tag">الإصدار المثبت: v1.1.0</div>
+            </div>
+            <span class="status-badge" id="modal-update-status">محدّث</span>
+          </div>
+          <p class="update-desc" id="modal-update-desc" data-i18n="updateCenterDesc">
+            فحص وتثبيت التحديثات الجديدة مباشرة من مستودع GitHub بنقرة زر دون الحاجة لفتح سطر الأوامر.
+          </p>
+          <button id="modal-update-btn" class="btn-primary-update">
+            <span class="update-spin-icon" id="modal-update-icon">🔄</span>
+            <span id="modal-update-btn-text" data-i18n="checkUpdateNow">فحص وتثبيت التحديثات الآن</span>
+          </button>
+        </div>
+
+        <!-- Info & Repo Link -->
+        <div class="settings-group compact-info">
+          <div class="info-row">
+            <span class="info-key" data-i18n="repoKey">مستودع المشروع:</span>
+            <a href="https://github.com/hosamazzam/live-stats-monitor" target="_blank" class="repo-link">github.com/hosamazzam/live-stats-monitor</a>
+          </div>
+          <div class="info-row">
+            <span class="info-key" data-i18n="autoUpdateStatus">الفحص التلقائي:</span>
+            <span class="text-emerald" data-i18n="enabledStatus">مفعّل (Auto-check Enabled)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="app-footer">
     <div class="footer-row">
       <span class="footer-refresh" data-i18n="liveRefresh">تحديث مباشر كل ثانيتين ⚡</span>
-      <button id="update-btn" class="update-btn" title="فحص التحديثات / Check for Updates">
+      <button id="update-btn" class="update-btn" title="مركز التحديثات / Update Center">
         <span class="update-icon" id="update-icon">↻</span>
         <span id="update-badge-text">v1.1.0</span>
       </button>
